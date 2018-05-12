@@ -3,6 +3,7 @@ package edu.washington.ieand.arewethereyet
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.telephony.SmsManager
 import android.util.Log
 import android.widget.Toast
 
@@ -11,14 +12,18 @@ class AWTYReceiver : BroadcastReceiver() {
 
         Log.i(MainActivity.TAG, "Broadcast received")
 
+
         when (intent?.action) {
             MainActivity.BROADCAST -> {
-                var phoneNum = intent.extras[TAR_PHONE_NUM] as String
+                val smsManager = SmsManager.getDefault()
+                val phoneNum = intent.extras[TAR_PHONE_NUM] as String
                 val msg = intent.extras[MESSAGE] as String
+                var toastPhoneNum = phoneNum
                 if (phoneNum.length == 10) {
-                    phoneNum = "(" + phoneNum.substring(0..2) + ") " + phoneNum.substring(3..5) + "-" + phoneNum.substring(6)
+                    toastPhoneNum = "(" + phoneNum.substring(0..2) + ") " + phoneNum.substring(3..5) + "-" + phoneNum.substring(6)
                 }
-                Toast.makeText(context, "$phoneNum : $msg", Toast.LENGTH_SHORT).show()
+                smsManager.sendTextMessage(phoneNum, null, msg, null, null)
+                Toast.makeText(context, "The following message was sent to $toastPhoneNum: \"$msg\"", Toast.LENGTH_SHORT).show()
             }
         }
     }

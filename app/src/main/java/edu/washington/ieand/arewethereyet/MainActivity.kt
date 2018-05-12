@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val receiver = AWTYReceiver()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         // Register BroadcastReceiver
         val filter = IntentFilter()
         filter.addAction(BROADCAST)
-        val receiver = AWTYReceiver()
         registerReceiver(receiver, filter)
 
         // Set up variables
@@ -76,6 +77,11 @@ class MainActivity : AppCompatActivity() {
                 buttonToggle = !buttonToggle
             }
         }
+    }
+
+    override fun onStop() {
+        unregisterReceiver(receiver)
+        super.onStop()
     }
 
     private fun showErrorToast(message: String) {
